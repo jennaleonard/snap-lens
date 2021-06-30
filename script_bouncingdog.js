@@ -1,6 +1,5 @@
 let video;
 let dogImage;
-let x, xspeed, y, yspeed;
 
 function preload() {
     dogImage = loadImage("assets/cute-dog.png");
@@ -12,10 +11,13 @@ function setup() {
     video.size(width, height);
 
     // create random speed
-    // x = round(random(width));
-    // y = round(random(height));
+    x = random(width);
+    y = random(height);
     xspeed = 2.5;
     yspeed = 2.5;
+
+    //resize image
+    dogImage.resize(width * .25, height * .25);
 
     video.hide();
 }
@@ -25,24 +27,8 @@ function draw() {
     image(video, 0, 0, width, height);
 
     // draw dog image
-    image(dogImage, 0, 0);
+    image(dogImage, x, y);
     x = x + xspeed;
     y = y + yspeed;
     move();
-}
-
-function move() {
-    if (x + dogImage.width == width) {
-        xspeed = -xspeed;
-        x = width - dogImage.width;
-    } else if (x == 0) {
-        xspeed = -xspeed;
-        x = 0;
-    } else if (y + dogImage.height == height) {
-        yspeed = -yspeed;
-        y = height - dogImage.height;
-    } else if (y == 0) {
-        yspeed = -yspeed;
-        y = 0;
-    }
 }
