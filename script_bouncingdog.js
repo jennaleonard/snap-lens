@@ -1,3 +1,5 @@
+p5.disableFriendlyErrors = true; // disables FES
+
 let video;
 
 let dogImage;
@@ -5,8 +7,6 @@ let kidsCheer;
 
 let poseNet;
 let poses = [];
-
-// Storing the keypoint positions
 let keypoints = [];
 let interpolatedKeypoints = [];
 
@@ -20,38 +20,30 @@ function setup() {
     video = createCapture(VIDEO);
     video.size(width, height);
 
-    // Create a new poseNet method with a single detection
     poseNet = ml5.poseNet(video, { flipHorizontal: true });
-    // This sets up an event that fills the global variable "poses"
-    // with an array every time new poses are detected
     poseNet.on("pose", function (results) {
     poses = results;
     });
 
-    // create random speed
-    x = random(width);
-    y = random(height);
+    x = Math.random(width);
+    y = Math.random(height);
     xspeed = 2.5;
     yspeed = 2.5;
 
-    //resize image
     dogImage.resize(width * .25, height * .25);
 
     video.hide();
 
-    // setup original keypoints
     createInitialKeypoints();
 
     kidsCheer.setVolume(0.5);
 }
 
 function updateKeypoints() {
-    // If there are no poses, ignore it.
     if (poses.length <= 0) {
       return;
     }
-  
-    // Otherwise, let's update the points;
+
     let pose = poses[0].pose;
     keypoints = pose.keypoints;
   
@@ -70,10 +62,8 @@ function updateKeypoints() {
 
 function draw() {
     let flippedVideo = ml5.flipImage(video);
-    // draw webcam video
     image(flippedVideo, 0, 0, width, height);
 
-    // draw dog image
     image(dogImage, x, y);
     x = x + xspeed;
     y = y + yspeed;
@@ -83,7 +73,6 @@ function draw() {
     petDog();
 }
 
-// Create default keypoints for interpolation easing
 function createInitialKeypoints() {
     let numKeypoints = 17;
     for (let i = 0; i < numKeypoints; i++) {
@@ -96,6 +85,7 @@ function createInitialKeypoints() {
 function petDog() {
     let leftWristPosition = interpolatedKeypoints[9];
     let rightWristPosition = interpolatedKeypoints[10];
+    
     let dleft = dist(
         x + dogImage.width / 2, 
         y + dogImage.height / 2, 
@@ -108,8 +98,6 @@ function petDog() {
         rightWristPosition.x, 
         rightWristPosition.y
         );
-    
-    //console.log(dleft);
 
     if (dleft <= 50) {
         if (kidsCheer.isPlaying() === false) {
